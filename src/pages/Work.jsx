@@ -1,59 +1,141 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+
 import { BookFrame } from '../components/BookFrame';
 import { WritingText } from '../components/WritingText';
+import { WorkMenuItem } from '../components/WorkMenuItem';
+import { WorkPreview } from '../components/WorkPreview';
 
-const categories = [
-  { label: 'Brand Identity', slug: 'brand-identity', number: '01' },
-  { label: 'Visual Design', slug: 'visual-design', number: '02' },
-  { label: 'Graphic Design', slug: 'graphic-design', number: '03' },
+const workAreas = [
+  {
+    number: '01',
+    title: 'Brand Identity',
+    slug: 'brand-identity',
+    description: 'Building clear, memorable brands from one core idea.',
+    image: '/images/brand-preview.jpg',
+    previewLabel: 'Wander & Km / Identity',
+    rotate: -1.2,
+    color: 'blue',
+  },
+  {
+    number: '02',
+    title: 'Visual Design',
+    slug: 'visual-design',
+    description: 'Visual systems, social content, and digital experiences.',
+    image: '/images/visual-preview.jpg',
+    previewLabel: 'Plumbing Hub / UI',
+    rotate: 1.3,
+    color: 'red',
+  },
+  {
+    number: '03',
+    title: 'Graphic Design',
+    slug: 'graphic-design',
+    description: 'Editorial layouts and graphic communication with character.',
+    image: '/images/graphic-preview.jpg',
+    previewLabel: 'Uncommon / Editorial',
+    rotate: -0.8,
+    color: 'paper',
+  },
 ];
 
 export function Work() {
   const navigate = useNavigate();
+  const [activePreview, setActivePreview] = useState(null);
+  const [mousePosition, setMousePosition] = useState({
+    x: -300,
+    y: -300,
+  });
+
+  const activeItem = workAreas.find(
+    (item) => item.slug === activePreview
+  );
+
+  const handleMouseMove = (event) => {
+    setMousePosition({
+      x: event.clientX + 20,
+      y: event.clientY + 20,
+    });
+  };
+
+  const goToCategory = (slug) => {
+    navigate(`/work/${slug}`);
+  };
 
   return (
     <BookFrame pageName="Selected Work">
-      <WritingText
-        as="p"
-        text="Page 03 — Work"
-        className="font-hand mb-4 text-sky-900"
-        speed={38}
-        delay={100}
+      <WorkPreview
+        item={activeItem || workAreas[0]}
+        isActive={Boolean(activeItem)}
+        mousePosition={mousePosition}
       />
+
+      <motion.div
+        initial={{ opacity: 0, y: 18 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{
+          type: 'spring',
+          stiffness: 120,
+          damping: 17,
+          delay: 0.08,
+        }}
+      >
+        <WritingText
+          as="p"
+          text="Page 03 — Work"
+          className="font-hand mb-4 text-sky-900"
+          speed={36}
+          delay={100}
+        />
+      </motion.div>
 
       <WritingText
         as="h1"
         text="Selected Work"
         className="font-display-hand text-scrap-red text-5xl md:text-7xl"
-        speed={70}
-        delay={400}
+        speed={65}
+        delay={420}
       />
 
-      <div className="mt-10 space-y-4">
-        {categories.map((category, index) => (
-          <button
-            key={category.slug}
-            type="button"
-            onClick={() => navigate(`/work/${category.slug}`)}
-            className="group flex w-full items-center justify-between border-b border-ink/20 py-4 text-left"
-            style={{
-              animation: `work-item-enter 700ms cubic-bezier(.16,1,.3,1) ${
-                1.6 + index * 0.2
-              }s both`,
-            }}
-          >
-            <span className="font-hand text-xl text-muted">
-              {category.number}
-            </span>
+      <motion.p
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{
+          duration: 0.7,
+          delay: 1.5,
+          ease: [0.16, 1, 0.3, 1],
+        }}
+        className="work-page-intro font-hand"
+      >
+        Hover over a discipline to peek inside the scrapbook.
+      </motion.p>
 
-            <span className="font-display-hand text-2xl text-ink transition-transform duration-500 group-hover:translate-x-2 md:text-4xl">
-              {category.label}
-            </span>
-
-            <span className="font-hand text-sky-900">↗</span>
-          </button>
+      <div className="work-menu-list">
+        {workAreas.map((item, index) => (
+          <WorkMenuItem
+            key={item.slug}
+            item={item}
+            index={index}
+            onEnter={setActivePreview}
+            onLeave={() => setActivePreview(null)}
+            onMove={handleMouseMove}
+            onClick={() => goToCategory(item.slug)}
+          />
         ))}
       </div>
+
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{
+          duration: 0.6,
+          delay: 2.05,
+        }}
+        className="work-page-note font-hand"
+      >
+        Click a section to view the projects ↗
+      </motion.p>
     </BookFrame>
   );
 }

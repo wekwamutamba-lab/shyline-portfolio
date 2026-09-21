@@ -5,17 +5,20 @@ export function WritingText({
   text,
   as: Tag = 'p',
   className = '',
-  speed = 24,
+  speed = 20,
   delay = 0,
   once = true,
+  cursor = true,
 }) {
   const elementRef = useRef(null);
+
   const isInView = useInView(elementRef, {
     once,
-    amount: 0.35,
+    amount: 0.22,
   });
 
   const shouldReduceMotion = useReducedMotion();
+
   const [visibleText, setVisibleText] = useState(
     shouldReduceMotion ? text : ''
   );
@@ -27,31 +30,40 @@ export function WritingText({
     }
 
     if (!isInView) {
-      if (!once) setVisibleText('');
+      if (!once) {
+        setVisibleText('');
+      }
+
       return;
     }
 
     let characterIndex = 0;
-    let timeoutId;
+    let startTimeout;
+    let writingTimeout;
 
-    const startWriting = window.setTimeout(() => {
-      const writeNextCharacter = () => {
+    startTimeout = window.setTimeout(() => {
+      const writeCharacter = () => {
         characterIndex += 1;
         setVisibleText(text.slice(0, characterIndex));
 
         if (characterIndex < text.length) {
-          timeoutId = window.setTimeout(writeNextCharacter, speed);
+          writingTimeout = window.setTimeout(writeCharacter, speed);
         }
       };
 
-      writeNextCharacter();
+      writeCharacter();
     }, delay);
 
     return () => {
-      window.clearTimeout(startWriting);
-      window.clearTimeout(timeoutId);
+      window.clearTimeout(startTimeout);
+      window.clearTimeout(writingTimeout);
     };
   }, [text, speed, delay, once, isInView, shouldReduceMotion]);
+
+  const isStillWriting =
+    !shouldReduceMotion &&
+    isInView &&
+    visibleText.length < text.length;
 
   return (
     <Tag
@@ -61,7 +73,7 @@ export function WritingText({
     >
       <span aria-hidden="true">{visibleText}</span>
 
-      {!shouldReduceMotion && isInView && visibleText.length < text.length && (
+      {cursor && isStillWriting && (
         <span className="writing-cursor" aria-hidden="true">
           |
         </span>

@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { WritingText } from './WritingText';
 
 export function WorkMenuItem({
   item,
@@ -44,21 +45,41 @@ export function WorkMenuItem({
       onBlur={onLeave}
       onClick={onClick}
     >
-      <span className="work-menu-number font-hand">
-        {item.number}
-      </span>
+      <WritingText
+        as="span"
+        text={item.number}
+        className="work-menu-number font-hand"
+        speed={45}
+        delay={1700 + index * 260}
+        cursor={false}
+      />
 
-      <span className="work-menu-title font-display-hand">
-        {item.title}
-      </span>
+      <WritingText
+        as="span"
+        text={item.title}
+        className="work-menu-title font-display-hand"
+        speed={44}
+        delay={1820 + index * 360}
+        cursor={false}
+      />
 
-      <span className="work-menu-description font-hand">
-        {item.description}
-      </span>
+      <WritingText
+        as="span"
+        text={item.description}
+        className="work-menu-description font-hand"
+        speed={12}
+        delay={2500 + index * 520}
+        cursor={false}
+      />
 
-      <span className="work-menu-arrow font-hand">
-        ↗
-      </span>
+      <WritingText
+        as="span"
+        text="↗"
+        className="work-menu-arrow font-hand"
+        speed={50}
+        delay={2100 + index * 360}
+        cursor={false}
+      />
     </motion.button>
   );
 }

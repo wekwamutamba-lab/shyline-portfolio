@@ -1,5 +1,5 @@
 import { motion, useSpring } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 export function WorkPreview({ item, isActive, mousePosition }) {
   const springX = useSpring(mousePosition.x, {
@@ -14,13 +14,11 @@ export function WorkPreview({ item, isActive, mousePosition }) {
     mass: 0.7,
   });
 
-  const [isTouchDevice, setIsTouchDevice] = useState(false);
-
-  useEffect(() => {
-    setIsTouchDevice(
+  const [isTouchDevice] = useState(
+    () =>
+      typeof window !== 'undefined' &&
       window.matchMedia('(pointer: coarse)').matches
-    );
-  }, []);
+  );
 
   if (isTouchDevice) return null;
 

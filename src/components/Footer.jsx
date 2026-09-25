@@ -1,16 +1,34 @@
 export function Footer() {
   return (
-    <footer className="container py-12 border-t border-ink/10 text-sm text-muted">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <p>© 2026 Shyline Mwanza. All rights reserved.</p>
-        <div className="flex gap-4">
-          <a href="mailto:hello@shyline.design" className="hover:underline">
+    <footer className="container py-10 text-sm text-muted">
+      <div className="flex flex-col gap-4 border-t border-ink/15 pt-6 md:flex-row md:items-center md:justify-between">
+        <p className="font-hand">
+          © 2026 Shyline Mwanza. All rights reserved.
+        </p>
+
+        <div className="flex flex-wrap gap-4 font-hand">
+          <a
+            href="mailto:shylinemwanza59@gmail.com"
+            className="transition-colors hover:text-sky-900"
+          >
             Email
           </a>
-          <a href="#" className="hover:underline">
+
+          <a
+            href="https://www.linkedin.com/in/shyline-mwanza-6a73323aa"
+            target="_blank"
+            rel="noreferrer"
+            className="transition-colors hover:text-sky-900"
+          >
             LinkedIn
           </a>
-          <a href="#" className="hover:underline">
+
+          <a
+            href="https://www.instagram.com/?deoia=1"
+            target="_blank"
+            rel="noreferrer"
+            className="transition-colors hover:text-sky-900"
+          >
             Instagram
           </a>
         </div>

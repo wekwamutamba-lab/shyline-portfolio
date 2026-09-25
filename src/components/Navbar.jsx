@@ -6,6 +6,7 @@ export function Navbar() {
   const navItems = [
     { to: '/about', label: 'About' },
     { to: '/work', label: 'Work' },
+    { to: '/notes', label: 'Notes' },
     { to: '/contact', label: 'Contact' },
   ];
 

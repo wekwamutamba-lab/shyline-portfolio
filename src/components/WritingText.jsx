@@ -5,75 +5,88 @@ export function WritingText({
   text,
   as: Tag = 'p',
   className = '',
-  speed = 20,
+  speed = 18,
   delay = 0,
-  once = true,
   cursor = true,
+  replayOnScroll = false,
+  href,
+  target,
+  rel,
 }) {
-  const elementRef = useRef(null);
-
-  const isInView = useInView(elementRef, {
-    once,
-    amount: 0.22,
-  });
-
+  const ref = useRef(null);
   const shouldReduceMotion = useReducedMotion();
 
-  const [visibleText, setVisibleText] = useState(
-    shouldReduceMotion ? text : ''
-  );
+  const isInView = useInView(ref, {
+    amount: 0.15,
+    once: !replayOnScroll,
+  });
+
+  const [displayedText, setDisplayedText] = useState('');
+  const renderedText = shouldReduceMotion ? text : displayedText;
 
   useEffect(() => {
-    if (shouldReduceMotion) {
-      setVisibleText(text);
-      return;
-    }
+    if (shouldReduceMotion) return undefined;
+
+    let currentCharacter = 0;
+    let delayTimer;
+    let typingTimer;
+    let resetTimer;
+
+    const clearTimers = () => {
+      window.clearTimeout(delayTimer);
+      window.clearTimeout(typingTimer);
+      window.clearTimeout(resetTimer);
+    };
+
+    const typeNextCharacter = () => {
+      currentCharacter += 1;
+      setDisplayedText(text.slice(0, currentCharacter));
+
+      if (currentCharacter < text.length) {
+        typingTimer = window.setTimeout(typeNextCharacter, speed);
+      }
+    };
 
     if (!isInView) {
-      if (!once) {
-        setVisibleText('');
+      if (replayOnScroll) {
+        resetTimer = window.setTimeout(() => setDisplayedText(''), 0);
       }
 
-      return;
+      return clearTimers;
     }
 
-    let characterIndex = 0;
-    let startTimeout;
-    let writingTimeout;
+    resetTimer = window.setTimeout(() => {
+      setDisplayedText('');
+      delayTimer = window.setTimeout(typeNextCharacter, delay);
+    }, 0);
 
-    startTimeout = window.setTimeout(() => {
-      const writeCharacter = () => {
-        characterIndex += 1;
-        setVisibleText(text.slice(0, characterIndex));
+    return clearTimers;
+  }, [
+    text,
+    speed,
+    delay,
+    isInView,
+    replayOnScroll,
+    shouldReduceMotion,
+  ]);
 
-        if (characterIndex < text.length) {
-          writingTimeout = window.setTimeout(writeCharacter, speed);
-        }
-      };
-
-      writeCharacter();
-    }, delay);
-
-    return () => {
-      window.clearTimeout(startTimeout);
-      window.clearTimeout(writingTimeout);
-    };
-  }, [text, speed, delay, once, isInView, shouldReduceMotion]);
-
-  const isStillWriting =
+  const isTyping =
     !shouldReduceMotion &&
     isInView &&
-    visibleText.length < text.length;
+    renderedText.length < text.length;
 
   return (
     <Tag
-      ref={elementRef}
+      ref={ref}
       className={`writing-text ${className}`}
+      href={href}
+      target={target}
+      rel={rel}
       aria-label={text}
     >
-      <span aria-hidden="true">{visibleText}</span>
+      <span aria-hidden="true">{renderedText}</span>
 
-      {cursor && isStillWriting && (
+      {cursor && isTyping && (
         <span className="writing-cursor" aria-hidden="true">
           |
         </span>

@@ -7,8 +7,10 @@ import { CustomCursor } from './components/CustomCursor';
 import { Home } from './pages/Home';
 import { About } from './pages/About';
 import { Work } from './pages/Work';
+import { ProjectDetail } from './pages/ProjectDetail';
 import { WorkCategory } from './pages/WorkCategory';
 import { Contact } from './pages/Contact';
+import { StudioNotes } from './pages/StudioNotes';
 
 function Layout() {
   return (
@@ -22,7 +24,9 @@ function Layout() {
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/work" element={<Work />} />
+          <Route path="/work/:cat/:project" element={<ProjectDetail />} />
           <Route path="/work/:cat" element={<WorkCategory />} />
+          <Route path="/notes" element={<StudioNotes />} />
           <Route path="/contact" element={<Contact />} />
         </Routes>
       </div>
